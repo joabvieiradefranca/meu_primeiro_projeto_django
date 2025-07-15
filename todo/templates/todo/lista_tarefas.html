@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lista de Tarefas</title>
+</head>
+<body>
+    <h1>Minhas Tarefas</h1>
+    <ul>
+        {% for tarefa in tarefas %}
+            <li>
+                <strong>{{ tarefa.titulo }}</strong> - 
+                {% if tarefa.concluida %}
+                    Concluída
+                {% else %}
+                    Pendente
+                {% endif %}
+            </li>
+        {% empty %}
+            <li>Nenhuma tarefa encontrada.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

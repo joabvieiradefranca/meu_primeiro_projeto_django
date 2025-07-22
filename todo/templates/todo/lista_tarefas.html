@@ -1,23 +1,151 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
+    <meta charset="UTF-8">
     <title>Lista de Tarefas</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #74ebd5, #acb6e5);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            margin-top: 50px;
+            padding: 30px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 850px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        .tarefa {
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border-left: 5px solid #007bff;
+            position: relative;
+        }
+
+        .tarefa strong {
+            font-size: 16px;
+        }
+
+        .tarefa em {
+            font-size: 13px;
+            color: #555;
+        }
+
+        .botoes {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        .botoes form {
+            display: inline;
+        }
+
+        .botoes button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 5px;
+            margin-left: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .botoes button.excluir {
+            background-color: #dc3545;
+        }
+
+        .botoes button:hover {
+            opacity: 0.85;
+        }
+    </style>
 </head>
 <body>
-    <h1>Minhas Tarefas</h1>
-    <ul>
+    <div class="container">
+        <h1>📋 Lista de Tarefas</h1>
+
+        <form method="post">
+            {% csrf_token %}
+            <label for="titulo">Título:</label>
+            <input type="text" name="titulo" id="titulo" required>
+
+            <label for="descricao">Descrição:</label>
+            <textarea name="descricao" id="descricao" rows="3"></textarea>
+
+            <input type="submit" value="Adicionar Tarefa">
+        </form>
+
+        <hr>
+
         {% for tarefa in tarefas %}
-            <li>
-                <strong>{{ tarefa.titulo }}</strong> - 
-                {% if tarefa.concluida %}
-                    Concluída
-                {% else %}
-                    Pendente
-                {% endif %}
-            </li>
+            <div class="tarefa">
+                <strong>{{ tarefa.titulo }}</strong><br>
+                {{ tarefa.descricao }}<br>
+                <em>{% if tarefa.concluida %}✅ Concluída{% else %}⏳ Pendente{% endif %}</em>
+
+                <div class="botoes">
+                    <form method="post" action="{% url 'concluir_tarefa' tarefa.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Concluir</button>
+                    </form>
+                    <form method="post" action="{% url 'excluir_tarefa' tarefa.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="excluir">Excluir</button>
+                    </form>
+                </div>
+            </div>
         {% empty %}
-            <li>Nenhuma tarefa encontrada.</li>
+            <p>Nenhuma tarefa adicionada.</p>
         {% endfor %}
-    </ul>
+    </div>
 </body>
 </html>
